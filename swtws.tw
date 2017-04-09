@@ -1,0 +1,334 @@
+みなさんこんばんは、上手くいっていれば僕は #yidev の懇親会で中華を食べ終わってコーヒー☕でも飲みながらタイムラインを眺めているはずです。コーヒー飲みながら登壇するのは初めてです。自己紹介はプロフィールを見てくださいね。今日はSwift4の話をします。
+
+---
+
+Swift4に関しては、Swift.orgやswift-evolutionで毎日情報が流れていますが、僕自身ちゃんとキャッチアップできていませんでした。今日はキャッチアップした内容を出来るだけリソースを提示しながらお話したいと思います。
+
+---
+
+日頃メーリスを読んだりしてSwift4のことを熟知されている方には物足りないかもしれません。内容を取り違えていたり、深く理解できていない箇所もあるかもしれません。なので、遠慮なくご指摘いただければ幸いです。今回は僕が議題を提供し、みなさんと議論できればとおもいます。
+
+---
+
+さて、早速始めましょう。Swift4が何を目指しているのかはここに記載されています。
+https://github.com/apple/swift-evolution#development-major-version--swift-40
+
+---
+
+Swift4は今年2017年の下期のリリースを目標に開発が進んでいます。Swift4には２つ目標があります。一つはSwift3のソースコードの安定性の提供、もう一つは、標準ライブラリのABI安定性の提供です。この２つの目標達成のために、開発を2段階に分けています。
+
+---
+
+Stage1: ソー​​ス安定性とABI安定性に必要な基本事項にフォーカスしています。既存の言語機能のABIを根本的に変更しない機能や、標準ライブラリに対するAPIの破壊的な変更を意味する変更は、この段階では考慮していません。Stage1の主だった変更をご紹介します。
+
+---
+
+ソースの安定化：異なるSwiftの言語バージョンが同じソースコードに共存できます。Swift3.1ですでに@ available にSwiftのバージョン指定ができるようになっています。
+https://github.com/apple/swift-evolution/blob/master/proposals/0141-available-by-swift-version.md
+
+---
+
+ABIの安定化：コード生成に関して、Swiftランタイムとのやりとりを含めた改善です。SwiftのパフォーマンスやSwiftの今後の方向性に影響することがあります(詳細は後述)。
+
+---
+
+標準ライブラリのジェネリクスの改善：条件付き適合、再帰的なプロトコルの適合、Where節を使った条件付き関連型など、ジェネリクスが強化されます。この3つのプロポーサルを紹介します。Generics Manifestにも記載されています。https://github.com/apple/swift/blob/master/docs/GenericsManifesto.md
+
+---
+
+条件付き適合(Conditional Confermance):
+特定の条件にマッチしたときだけ、ジェネリクスをそのプロトコルに適合するようにできます。個人的には、プロトコルで実現できる世界がさらに広がるのではと思っています。
+https://github.com/apple/swift-evolution/blob/master/proposals/0143-conditional-conformances.md
+
+``` swift
+protocol P {
+  func doSomething()
+}
+
+struct S: P {
+  func doSomething() { print("S") }
+}
+
+// ElementがPに適合するときだけ、ArrayもPに適合する。
+extension Array: P where Element: P {
+  func doSomething() {
+    for value in self {
+      value.doSomething()
+    }
+  }
+}
+
+// 動的にPに適合しているか判定
+func doSomethingIfP(_ value: Any) {
+  if let p = value as? P {
+    p.doSomething()
+  } else {
+    print("Not a P")
+  }
+}
+
+doSomethingIfP([S(), S(), S()]) // "S"が3回表示される
+doSomethingIfP([1, 2, 3])       // "Not a P"と表示される
+```
+
+---
+
+再帰的なプロトコルの適合(Recursive Protocol Constraints):
+あるプロトコルの関連型がプロトコル自身に適合できるようになります。
+https://github.com/apple/swift-evolution/blob/master/proposals/0157-recursive-protocol-constraints.md
+
+``` swift
+protocol Sequence {
+    associatedtype SubSequence: Sequence //Sequenceの関連型がSequenceに適合
+        where Iterator.Element == SubSequence.Iterator.Element, SubSequence.SubSequence == SubSequence
+
+    func dropFirst(_ n: Int) -> Self.SubSequence
+    // ...
+}
+```
+---
+
+Where節を使った条件付き関連型
+上記にも関連しますが、関連型が適合するプロトコルにwhere節で条件を付けることができます。https://github.com/apple/swift-evolution/blob/master/proposals/0142-associated-types-constraints.md
+
+```swift
+protocol Sequence {
+    associatedtype Iterator : IteratorProtocol
+    associatedtype SubSequence : Sequence where SubSequence.Iterator.Element == Iterator.Element
+    //whereでassociatedtypeに条件をつけられる
+    ...
+}
+```
+
+---
+
+Stringの再評価：Swift4では、Unicodeの正確さを維持しながら、よりパワフルで使いやすいStringにしようとしています。今日の後半でも少しStringのお話をします。
+
+---
+
+Memory Ownership Model：CycloneやRustをインスパイアしたモデルになるそうです。これはABIに大きく影響します。Stage1にすべて導入するには巨大過ぎますが、今この段階で設計が必要とのことですが、具体的な話はまだ出てきていない認識です。
+
+---
+
+以上がSwift4 Stage1における変更です。Stage 2に持ち越されるものもありますが、すべてSwift4で実現されるとうれしいですね！🚩。
+
+---
+
+残念なことに、ABIの安定化は延期されました😇 2/16にその旨がメーリスに流れています。コンパイル時間の改善やコンパイラの安定化を優先したということです。
+https://lists.swift.org/pipermail/swift-evolution/Week-of-Mon-20170213/032116.html
+
+---
+
+そもそも”ABIの安定化”とはどういうことでしょう。具体的には、ABI Manifestoに書かれています。簡単に言うと、違うバージョンのSwiftでコンパイルされたフレームワークをそのまま使えるぜ！ということです。https://github.com/apple/swift/blob/master/docs/ABIStabilityManifesto.md
+
+---
+
+Swiftのバージョンは統一する必要があるので、Carthageなどで導入したフレームワークは、現状ではVer.upの度にビルドし直す必要があります。ABIの安定化によって、Swiftのバージョンが先に進んでも、古いバージョンのフレームワークはそのまま使えます。
+
+---
+
+このままSwift4がリリースされても、先述のソース安定化によって、同じソースコードにSwift3.xとSwift 4を同居させることは可能です。ですが、Carthageなどで導入しているライブラリがSwift4対応していない場合はどうなるでしょう。
+
+---
+
+どんなに自分のソースコードをSwift4対応しても、フレームワークがSwift4でビルドされていなければコンパイルが通りません。OSS開発者のみなさま、ご対応よろしくお願いします🙏
+
+---
+
+そのままSwift3を使い続けることもできます。Swift4がリリースされると、`-swift-version 3`と`-swift-version 4`の2つのフラグが提供されます。ここに記載があります。https://swift.org/blog/swift-4-0-release-process/
+
+---
+
+Swift Version 3モードは、Swift 4のコンパイラで、Swift3.1のソースコードのビルドが可能になるモードです。ところで今日お集まりのみなさんはSwift3への移行はお済ですよね？
+
+---
+
+Swift Version 4は、Swift 4の破壊的変更を許容します。主に書き換えが必要なのは、String周辺です。Swift2.2からSwift3への変更に比べたらそんなに大したことないとのことですが、実際のところ試してみないとわかりません😇
+
+---
+
+ちなみにStage2で何が変わるのかも見ておきましょう。Stage2ではABIの変更に影響を与えない程度の既存機能の変更が含まれます。
+
+---
+
+ソースの破壊的変更：Swift4モードの破壊的変更です。下記の方針で行われます。
+* 既存構文/APIはどんどん壊して変更。
+* 新規構文/APIは絶対良いもので、既存のものとコンフリクトしないようにする
+* 既存APIから自動的に移行できるようにする
+
+---
+
+既存の標準ライブラリの改善：特に標準ライブラリの追加では、対応する実装を提供するプロポーザルが優先されます。改善のための潜在的なフォーカスエリアには、コレクション（例えば、新しいコレクションアルゴリズム）や、Dictionaryの人間工学おける改善などが含まれます。
+
+---
+
+Foundationの改善：SwiftではCocoa SDKをシームレスに動作させるために、Foundation APIの改良する予定です。Stage2を開始すると、具体的な目標の詳細が記載されるとのことですが、今日までのところ、その内容は提示されていませんね…
+
+---
+
+以上がStage2の変更内容ですが、つまりまだ明確には定まっていません。今まさに議論/開発がなされているところです。Swiftの成長が身近に感じられて楽しいですね。
+
+---
+
+ここからは、Stringの再評価によって、どのようにAPIが変わるのか見てみましょう。これはString Manifestに記載されています。https://github.com/apple/swift/blob/master/docs/StringManifesto.md
+
+---
+
+Swift 4以降におけるStringが目指しているところは、Perlよりも優れていることらしいです🤔 それが実現するかはともかく、特に改善したいのは、人間工学(Ergonomics)、正確さ(Correctness)、パフォーマンスの３つです。
+
+---
+
+Stringは標準ライブラリやFoundationによって複雑になっています。Stringだけで205個のAPIがあるようです。Intとの比較はジョークみたいなもんです 🤡
+https://github.com/apple/swift/blob/master/docs/StringManifesto.md#api-surface-area
+
+---
+
+APIをわかりやすくするために、以下の変更が加わります。
+
+///以下資料へ
+・Stringを再びCollectionとし、.charactorを削除。
+・Slicing Syntaxの統一
+・Comparableの関数を基本構文に収まるように変更
+・言語に依存する/しないオペレーションの分離
+・APIの再配置
+
+---
+
+1.0では、Collectionでしたが、2.0で、そうではなくなりました。理由は、StringがUnicodeScalarsのSequenceとして扱われると、lexicographicalCompare、reversedなどのアルゴリズムが残念だからです。
+
+---
+
+文字列を結合するときに、先頭と末尾に別々のグラフェンクラスターを結合することになるそうですが、
+正直何言ってんのかサッパリです😇とにかくSwift2.0ではCollectionではなくなりました。
+
+---
+
+その問題も特に問題じゃなかったから復活させますよという主旨の話が書いてあります。ここは本質的ではないので今回触れません。とにかくSwift4では再びCollectionになります。
+https://github.com/apple/swift/blob/master/docs/StringManifesto.md#string-should-be-a-collection-of-characters-again
+
+---
+
+StringがCollectionになるということは、当然Sequenceにも適合しますので、mapやfilterも使えたりします。部分文字列にスライスすることもできます。
+
+---
+
+そのスライス操作の統一も行うと書いてあります。startIndexとendIndexが明確な場合、subscriptでスライスでき、in-place mutatingもサポートしています。特定のindexからendまで、または最初からindexまでのスライスはメソッドを通して行われ、in-place mutatingはサポートしていません。
+
+---
+
+スライスすると、SubStringが生成されます。このSubStringの生成方法には3つの選択肢があり、3番を最良と考えているようです。
+https://github.com/apple/swift/blob/master/docs/StringManifesto.md#substrings
+
+///資料
+SubStringとStringは、
+1. 同じ型、ストレージを共有
+2. 同じ型、ストレージをコピー
+3. 違う型、ストレージをコピー
+
+---
+
+1はSwift3.0で取られている方法です。元のString に対して、開始位置、長さ、バッファ所有者を持った新しいCharacterViewを生成します。スライスの効率は良いのですが、元のStringが開放されたあともSubStringが生き残り続けます。この方法は他の言語では、短いStringが生き残り続けることがメモリリークとみなされており、Javaでは1.7から、Substringはコピーに変更になりました。
+
+---
+
+2はC#やNSStringで取られている方法です。この方法はメモリリークは回避できますが、コピーはパフォーマンス上オーバーヘッドとなります。なので、SubStringを使うよりは、String/Rangeを用いた方が良いと書いてあります。
+
+---
+
+ArrayではArraySliceを用いることで、不慮のメモリリークを防ぎながら、ストレージの共有を実現しています。3では、このArraySliceと同じように、SubStringという別の型を用意しましょうということが提案されています。
+
+---
+
+これにも欠点はあります。Stringを作ると、SubStringも生成されることです。型のmismatchを解消するために、SubStringはStringのSubTypeとなります。これによりSubStringからString、[SubString]から[String]への暗黙的型変換が行えますと説明されています。型推論と組み合わせるので、型の違いは問題にはならないとのことです。
+
+---
+
+よくわからなければString使いましょうとも書いています。Stringが必要な場所に渡されたSubStringは暗黙的にコピーされます。「同じタイプのコピーされたストレージ」モデルと比較すると、SubStringの作成タイミングからStringに変換されるタイミングまで、コピーを延期しました。
+
+---
+
+不要なコピーを避けるために、Rangeを使うんだったら、SubString使った方がパフォーマンスいいよとも言ってます。ともかく、Swift 4ではStringとSubStringは違う型になるけど、型推論あるから気にしなくていいし、StringをスライスするときはおとなしくSubString使っとく方がパフォーマンスいいよ、という解釈をしました。
+
+---
+
+Stringしかない状況で、SubStringを使いたいときにはどうすればいいのか。Stringに空のsubscriptをつけるという解決策が提案されています。(これはどうなんだ… )
+
+---
+
+StringとSubStringは別の型という扱いになりますが、その多くの機能は共通しているので、Unicodeプロトコルというプロトコルの導入も検討されているようです。ですが、今日の段階で触れるにはもう少し仕様が変わりそうな気配がしたのでやめておきましょう。このあとも永遠とSubStringの話が続きますが、なんか結論がよく見えなかったので、次の話にいきます。
+
+---
+
+国際化の話です。まずlocalizedXXXというメソッドはなくなります。Localeはパラメータとして渡せるようになります。操作に応じて、デフォルトのオプションが変わります。
+
+---
+
+操作に応じてオプションが変わるということに関してはこちらに記載あります。ソート、大文字小文字の変換、パターンマッチで渡せるオプションが違います。
+https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-with-options
+
+---
+
+国際化で起こるエラーとしては、ローカライズされていないテキストが意図せず表示されてしまうことですが、//追記
+ただ、この国際化の話もSwift4ではまだ不完全で、Swift 5でも議論が続くようですね。Stringのお話はこの辺りから目下議論中の話になってくるので、もう少し現実的な話に戻しましょう。
+
+---
+
+ここからは現時点でAcceptされたプロポーサル、実装済みのプロポーサルを見てみましょう。※Package Manager関係のプロポーサルは今回除外します。プロポーサルのステータスはここから見れます。https://apple.github.io/swift-evolution/
+
+---
+
+タプルの表記について。現在はタプルを1つの変数としても、その要素を複数の変数としても扱うことが可能ですが、タプルがn個の要素から成る場合、n個の変数を用意しなければならないので、タプルはあくまでも1変数、各要素にはそのindexでアクセスできるようにします。
+//資料
+
+---
+
+ここからはまだSwift4に入るかは未定のものです。まずはUnapplied Method Referenceの平坦化です。現在はカリー化されますが、これをTypeを含めたタプルにしてflattenしましょうという変更です。
+//資料
+
+---
+
+[SE-0068] Expanding Swift Self to class members and value types
+//資料
+
+---
+
+[SE-0075] Adding a Build Configuration Import Test
+//資料
+
+---
+
+プロトコル指向整数型：Integerの再構成です。
+//資料
+
+---
+
+Generics Subscript：ジェネリクスでサブスクリプトを使えるようにしようという変更です。
+//資料
+
+---
+
+[SE-0153]Compensate for the inconsistency of @NSCopying's behavior
+//資料
+
+---
+
+[SE-0154] Provide Custom Collections for Dictionary Keys and Values
+//資料
+
+---
+
+クラスとサブタイプ：
+//資料
+
+---
+
+さて、今後のSwiftの変化を駆け巡ってみましたがいかがでしたでしょうか？常にチェックされている方々には少し物足りなかったかもしれません。これまでキャッチアップ出来ていなかった方はこれを気にメーリスで何が議論されているのかぜひ目を通してみてください。
+
+---
+
+英語ですが、Google翻訳の精度が良いとなんとなく読めます。右クリックして「日本語に翻訳」すると、とにかく日本語に翻訳してくれます。英語を頑張りたいという方にはこういうコミュニティもあります。
+https://clem.connpass.com/
+
+---
+
+今回登壇駆動でやってみましたが、内容が内容だけに結構きつかったです😇 消化不良になっている項目がいくつもあります。引き続きキャッチアップを続けるとともに、今後Swiftがどんどん良い言語になっていくことを願ってやみません。以上です。どうもありがとうございました！
