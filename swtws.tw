@@ -184,13 +184,7 @@ https://github.com/apple/swift/blob/master/docs/StringManifesto.md#api-surface-a
 ---
 
 APIをわかりやすくするために、以下の変更が加わります。
-
-///以下資料へ
-・Stringを再びCollectionとし、.charactorを削除。
-・Slicing Syntaxの統一
-・Comparableの関数を基本構文に収まるように変更
-・言語に依存する/しないオペレーションの分離
-・APIの再配置
+![2.jpg](./imgs/2/2.001.jpeg)
 
 ---
 
@@ -199,7 +193,7 @@ APIをわかりやすくするために、以下の変更が加わります。
 ---
 
 文字列を結合するときに、先頭と末尾に別々のグラフェンクラスターを結合することになるそうですが、
-正直何言ってんのかサッパリです😇とにかくSwift2.0ではCollectionではなくなりました。
+この辺正直何言ってんのかサッパリです😇とにかくSwift2.0ではCollectionではなくなりました。
 
 ---
 
@@ -214,20 +208,21 @@ StringがCollectionになるということは、当然Sequenceにも適合し�
 
 そのスライス操作の統一も行うと書いてあります。startIndexとendIndexが明確な場合、subscriptでスライスでき、in-place mutatingもサポートしています。特定のindexからendまで、または最初からindexまでのスライスはメソッドを通して行われ、in-place mutatingはサポートしていません。
 
+```
+s[i..<j].mutate() //in-place mutating sがスライスされる
+s.prefix(upTo: i).readOnly() // not supported in-place mutating sに影響なし
+```
+
 ---
 
 スライスすると、SubStringが生成されます。このSubStringの生成方法には3つの選択肢があり、3番を最良と考えているようです。
 https://github.com/apple/swift/blob/master/docs/StringManifesto.md#substrings
-
-///資料
-SubStringとStringは、
-1. 同じ型、ストレージを共有
-2. 同じ型、ストレージをコピー
-3. 違う型、ストレージをコピー
+![3.jpg](./imgs/3/3.001.jpeg)
 
 ---
 
-1はSwift3.0で取られている方法です。元のString に対して、開始位置、長さ、バッファ所有者を持った新しいCharacterViewを生成します。スライスの効率は良いのですが、元のStringが開放されたあともSubStringが生き残り続けます。この方法は他の言語では、短いStringが生き残り続けることがメモリリークとみなされており、Javaでは1.7から、Substringはコピーに変更になりました。
+1はSwift3.0の方法です。開始位置、長さ、バッファ所有者を持ったCharacterViewを生成します。効率の良さと引き換えに、Stringが開放されたあともSubStringが生き続けます。他言語ではメモリリークとみなされ、Java1.7からはコピーされます。
+![4.png](./imgs/4/4.png)
 
 ---
 
@@ -239,32 +234,25 @@ ArrayではArraySliceを用いることで、不慮のメモリリークを防�
 
 ---
 
-これにも欠点はあります。Stringを作ると、SubStringも生成されることです。型のmismatchを解消するために、SubStringはStringのSubTypeとなります。これによりSubStringからString、[SubString]から[String]への暗黙的型変換が行えますと説明されています。型推論と組み合わせるので、型の違いは問題にはならないとのことです。
+3にも欠点はあります。Stringを作ると、SubStringも生成されることです。型のmismatchを解消するために、SubStringはStringのSubTypeとなります。これによりSubStringからString、[SubString]から[String]への暗黙的型変換が行えますと説明されています。型推論と組み合わせるので、型の違いは問題にはならないとのことです。
 
 ---
 
-よくわからなければString使いましょうとも書いています。Stringが必要な場所に渡されたSubStringは暗黙的にコピーされます。「同じタイプのコピーされたストレージ」モデルと比較すると、SubStringの作成タイミングからStringに変換されるタイミングまで、コピーを延期しました。
+よくわからなければString使いましょうとも書いています。StringからSubStringは暗黙的にコピーされます。先程の2番のモデルと比較すると、SubStringの作成タイミングからStringに変換されるタイミングまで、コピーが遅延されています。
 
 ---
 
-不要なコピーを避けるために、Rangeを使うんだったら、SubString使った方がパフォーマンスいいよとも言ってます。ともかく、Swift 4ではStringとSubStringは違う型になるけど、型推論あるから気にしなくていいし、StringをスライスするときはおとなしくSubString使っとく方がパフォーマンスいいよ、という解釈をしました。
+不要なコピーを避けるために、Rangeを使うんだったら、SubString使った方がパフォーマンスいいよとも書いてあります。Swift4ではStringとSubStringは違う型になるけど、型推論あるから気にしなくていいし、StringをスライスするときはおとなしくSubString使っとく方がパフォーマンスいいよ、という解釈をしました。
 
 ---
 
-Stringしかない状況で、SubStringを使いたいときにはどうすればいいのか。Stringに空のsubscriptをつけるという解決策が提案されています。(これはどうなんだ… )
-
----
-
-StringとSubStringは別の型という扱いになりますが、その多くの機能は共通しているので、Unicodeプロトコルというプロトコルの導入も検討されているようです。ですが、今日の段階で触れるにはもう少し仕様が変わりそうな気配がしたのでやめておきましょう。このあとも永遠とSubStringの話が続きますが、なんか結論がよく見えなかったので、次の話にいきます。
+StringとSubStringは別の型という扱いになりますが、その多くの機能は共通しているので、Unicodeプロトコルの導入も検討されているようです。今日の段階で触れるにはもう少し仕様が変わりそうな気配がしたのでやめておきましょう。次の話にいきます。
 
 ---
 
 国際化の話です。まずlocalizedXXXというメソッドはなくなります。Localeはパラメータとして渡せるようになります。操作に応じて、デフォルトのオプションが変わります。
-
----
-
-操作に応じてオプションが変わるということに関してはこちらに記載あります。ソート、大文字小文字の変換、パターンマッチで渡せるオプションが違います。
 https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-with-options
+![5.jpeg](./imgs/5/5.jpeg)
 
 ---
 
