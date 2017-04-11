@@ -32,12 +32,12 @@ ABIの安定化：コード生成に関して、Swiftランタイムとのやり
 
 ---
 
-標準ライブラリのジェネリクスの改善：条件付き適合、再帰的なプロトコルの適合、Where節を使った条件付き関連型など、ジェネリクスが強化されます。この3つのプロポーサルを紹介します。Generics Manifestにも記載されています。https://github.com/apple/swift/blob/master/docs/GenericsManifesto.md
+標準ライブラリのジェネリクスの改善：条件付き適合、再帰的なプロトコルの適合、Where節を使った条件付き関連型など、ジェネリクスの機能が強化されます。この3つのプロポーサルを紹介します。Generics Manifestにも記載されています。https://github.com/apple/swift/blob/master/docs/GenericsManifesto.md
 
 ---
 
-条件付き適合(Conditional Confermance):
-特定の条件にマッチしたときだけ、ジェネリクスをそのプロトコルに適合するようにできます。個人的には、プロトコルで実現できる世界がさらに広がるのではと思っています。
+[SE-0143]条件付き適合(Conditional Confermance):
+特定の条件にマッチしたときだけ、ジェネリクスをそのプロトコルに適合するようにできます。
 https://github.com/apple/swift-evolution/blob/master/proposals/0143-conditional-conformances.md
 
 ``` swift
@@ -73,7 +73,7 @@ doSomethingIfP([1, 2, 3])       // "Not a P"と表示される
 
 ---
 
-再帰的なプロトコルの適合(Recursive Protocol Constraints):
+[SE-0157]再帰的なプロトコルの適合(Recursive Protocol Constraints):
 あるプロトコルの関連型がプロトコル自身に適合できるようになります。
 https://github.com/apple/swift-evolution/blob/master/proposals/0157-recursive-protocol-constraints.md
 
@@ -88,7 +88,7 @@ protocol Sequence {
 ```
 ---
 
-Where節を使った条件付き関連型
+[SE-0142]Where節を使った条件付き関連型
 上記にも関連しますが、関連型が適合するプロトコルにwhere節で条件を付けることができます。https://github.com/apple/swift-evolution/blob/master/proposals/0142-associated-types-constraints.md
 
 ```swift
@@ -166,7 +166,7 @@ Foundationの改善：SwiftではCocoa SDKをシームレスに動作させる�
 
 ---
 
-以上がStage2の変更内容ですが、つまりまだ明確には定まっていません。今まさに議論/開発がなされているところです。Swiftの成長が身近に感じられて楽しいですね。
+以上がStage2の変更内容ですが、つまりまだ明確には定まっていませんし、予定より遅れ気味で進行しています。今まさに議論/開発がなされており、Swiftの成長が身近に感じられて楽しいですね。
 
 ---
 
@@ -237,7 +237,7 @@ StringとSubStringは別の型という扱いになりますが、その多く�
 
 ---
 
-国際化の話です。まずlocalizedXXXというメソッドはなくなります。Localeはパラメータとして渡せるようになります。操作に応じて、デフォルトのオプションが変わります。ただ、この国際化の話もSwift4ではまだ不完全で、Swift 5でも議論が続くようですね。https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-with-options
+国際化の話です。まずlocalizedXXXというメソッドはなくなります。Localeはパラメータとして渡せるようになります。操作に応じて、デフォルトのオプションが変わります。この国際化の話もSwift4ではまだ不完全で、Swift 5でも議論が続くようですね。https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-with-options
 ![5.jpeg](./imgs/5/5.jpeg)
 
 ---
@@ -267,7 +267,7 @@ https://apple.github.io/swift-evolution
 
 ---
 
-このようなプロトコルで再構成して、Generic Programingを可能にします。Tweetでは字数の問題でカバーできないので、各プロトコルの詳細はこちらをご覧ください。
+このようなプロトコルで再構成して、Generic Programingを可能にします。各プロトコルの詳細はこちらをご覧ください。
 https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-integers.md
 ![SE-0104](./imgs/10/10.001.jpeg)
 
@@ -301,9 +301,19 @@ https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-int
 
 ---
 
-[SE-0160]@objcの推論の挙動が変わります。
-とても1ツイートにまとめられなかったので、一昨日potatotipsで先に発表しておきました。
-https://speakerdeck.com/d_date/se-0160-limiting-at-objc-inference
+ルール1と2です。
+
+---
+
+ルール3と4です。
+
+---
+
+ルール5です。typealiasはAnyObject,クラス, プロトコルに展開し、ルール1〜4を適応します。
+
+---
+
+[SE-0160]@objcの推論の挙動が変わります。とても1ツイートにまとめられなかったので、一昨日potatotipsで先に発表しておきました。資料：https://speakerdeck.com/d_date/se-0160-limiting-at-objc-inference
 
 ---
 
@@ -311,7 +321,7 @@ https://speakerdeck.com/d_date/se-0160-limiting-at-objc-inference
 
 ---
 
-英語ですが、Google翻訳の精度が良いとなんとなく読めます。右クリックして「日本語に翻訳」すると、とにかく日本語に翻訳してくれます。英語を頑張りたいという方にはこういうコミュニティもあります。
+英語ですが、Google翻訳の精度が良いと翻訳された日本語もなんとなく読めます。英語を頑張りたいという方にはこういうコミュニティもあります。
 https://clem.connpass.com/
 
 ---
