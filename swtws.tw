@@ -188,16 +188,7 @@ APIをわかりやすくするために、以下の変更が加わります。
 
 ---
 
-1.0では、Collectionでしたが、2.0で、そうではなくなりました。理由は、StringがUnicodeScalarsのSequenceとして扱われると、lexicographicalCompare、reversedなどのアルゴリズムが残念だからです。
-
----
-
-文字列を結合するときに、先頭と末尾に別々のグラフェンクラスターを結合することになるそうですが、
-この辺正直何言ってんのかサッパリです😇とにかくSwift2.0ではCollectionではなくなりました。
-
----
-
-その問題も特に問題じゃなかったから復活させますよという主旨の話が書いてあります。ここは本質的ではないので今回触れません。とにかくSwift4では再びCollectionになります。
+1.0では、Collectionでしたが、問題があって2.0で、そうではなくなりました。が、その問題も特に問題じゃなかったから復活させるそうです(本質的ではないので触れません)。とにかくSwift4では再びCollectionになります。
 https://github.com/apple/swift/blob/master/docs/StringManifesto.md#string-should-be-a-collection-of-characters-again
 
 ---
@@ -242,11 +233,7 @@ ArrayではArraySliceを用いることで、不慮のメモリリークを防�
 
 ---
 
-不要なコピーを避けるために、Rangeを使うんだったら、SubString使った方がパフォーマンスいいよとも書いてあります。Swift4ではStringとSubStringは違う型になるけど、型推論あるから気にしなくていいし、StringをスライスするときはおとなしくSubString使っとく方がパフォーマンスいいよ、という解釈をしました。
-
----
-
-StringとSubStringは別の型という扱いになりますが、その多くの機能は共通しているので、Unicodeプロトコルの導入も検討されているようです。今日の段階で触れるにはもう少し仕様が変わりそうな気配がしたのでやめておきましょう。次の話にいきます。
+StringとSubStringは別の型という扱いになりますが、その多くの機能は共通しているので、Unicodeプロトコルの導入も検討されているようです。今日の段階で触れるにはもう少し仕様が変わりそうな気配がしたのでやめておきましょう。
 
 ---
 
@@ -256,7 +243,7 @@ StringとSubStringは別の型という扱いになりますが、その多く�
 ---
 
 ここからは現時点でAcceptされたプロポーサル、実装済みのプロポーサルを見てみましょう。※Package Manager関係は今回除外します。また、Swift4で入るかは未定のものも多いです。プロポーサルのステータスはここから。
-https://apple.github.io/swift-evolution/
+https://apple.github.io/swift-evolution
 
 ---
 
@@ -280,7 +267,7 @@ https://apple.github.io/swift-evolution/
 
 ---
 
-このようなプロトコルで再構成して、Generic Programingを可能にします。Tweetでは字数の問題でカバーできないので、各プロトコルはこちらをご覧ください。
+このようなプロトコルで再構成して、Generic Programingを可能にします。Tweetでは字数の問題でカバーできないので、各プロトコルの詳細はこちらをご覧ください。
 https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-integers.md
 ![SE-0104](./imgs/10/10.001.jpeg)
 
@@ -298,7 +285,7 @@ https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-int
 
 ---
 
-@NSCopyingをつけた際は、常にコピーが起こるように修正されます。
+@NSCopyingをつけると、常にコピーが起こるように修正されます。
 ![SE-0153](./imgs/12/12.003.jpeg)
 ![SE-0153](./imgs/12/12.004.jpeg)
 
@@ -310,12 +297,13 @@ https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-int
 
 ---
 
-[SE-0156] Class and Subtype existentials
-//資料
+[SE-0156]クラスとプロトコルを組み合わせて型を宣言することができます。クラス、サブクラス、プロトコルの組み合わせは5つのルールにもとづいて適用されます。
 
 ---
 
-[SE-0160] Limiting @objc inference
+[SE-0160]@objcの推論の挙動が変わります。
+とても1ツイートにまとめられなかったので、一昨日potatotipsで先に発表しておきました。
+https://speakerdeck.com/d_date/se-0160-limiting-at-objc-inference
 
 ---
 
