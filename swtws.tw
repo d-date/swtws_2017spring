@@ -305,16 +305,11 @@ https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-int
 ---
 
 [SE-0154] Provide Custom Collections for Dictionary Keys and Values
-//資料
 
 ---
 
 [SE-0156] Class and Subtype existentials
 //資料
-
----
-
-[SE-0157] Support recursive constraints on associated types
 
 ---
 
