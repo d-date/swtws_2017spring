@@ -265,34 +265,34 @@ https://apple.github.io/swift-evolution/
 
 ---
 
-タプルの表記について。現在は、タプルとして変数をクロージャで用いる場合も、その要素をそれぞれ変数として扱う場合も、引数に区別ありませんが、Swift4から関数型として宣言する場合は、二重括弧が必要となります。
+[SE-0110]タプルの表記について。現在は、タプルとして変数をクロージャで用いる場合も、その要素をそれぞれ変数として扱う場合も、引数に区別ありませんが、Swift4から関数型として宣言する場合は、二重括弧が必要となります。これはSwift4で入ります。
 ![SE-0110](./imgs/6/6.001.jpeg)
 
 ---
 
-Swift4で入るかは未定ですが、AcceptされているProposalです。
-Unapplied Method Referenceです。現在はcurry化されますが、Typeと引数を同じネストで引数となるように変更されます。
+[SE-0042]Unapplied Method Referenceです。現在はcurry化されますが、Typeと引数を同じネストで引数となるように変更されます。
 ![SE-0042](./imgs/7/7.001.jpeg)
 
 ---
 
-[SE-0068] Expanding Swift Self to class members and value types
-//資料
+[SE-0075]Build Configuration Import Testの追加です。canImportでモジュール単位での判定が可能になります。今後OS単位のみでの判定のみでは難しくなるとの判断です。
+![SE-0075](./imgs/8/8.001.jpeg)
 
 ---
 
-[SE-0075] Adding a Build Configuration Import Test
-//資料
+[SE-0104]整数型をプロトコルで再構成して、Generic Programingできるようにします。現在だとこのようにIntとInt8でOperatorの適応はできません。
+![SE-0104](./imgs/9/9.001.jpeg)
 
 ---
 
-プロトコル指向整数型：Integerの再構成です。
-//資料
+このようなプロトコルで再構成して、Generic Programingを可能にします。Tweetでは字数の問題でカバーできないので、各プロトコルはこちらをご覧ください。
+https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-integers.md
+![SE-0104](./imgs/10/10.001.jpeg)
 
 ---
 
-Generics Subscript：ジェネリクスでサブスクリプトを使えるようにしようという変更です。
-//資料
+[SE-0148]subscriptに型変数が使えるようになりました。
+![SE-0148](./imgs/11/11.001.jpeg)
 
 ---
 
