@@ -250,13 +250,8 @@ StringとSubStringは別の型という扱いになりますが、その多く�
 
 ---
 
-国際化の話です。まずlocalizedXXXというメソッドはなくなります。Localeはパラメータとして渡せるようになります。操作に応じて、デフォルトのオプションが変わります。
-https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-with-options
+国際化の話です。まずlocalizedXXXというメソッドはなくなります。Localeはパラメータとして渡せるようになります。操作に応じて、デフォルトのオプションが変わります。ただ、この国際化の話もSwift4ではまだ不完全で、Swift 5でも議論が続くようですね。https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-with-options
 ![5.jpeg](./imgs/5/5.jpeg)
-
----
-
-ただ、この国際化の話もSwift4ではまだ不完全で、Swift 5でも議論が続くようですね。Stringのお話はこの辺りから目下議論中の話になってくるので、もう少し現実的な話に戻しましょう。
 
 ---
 
@@ -314,8 +309,16 @@ https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-int
 
 ---
 
-クラスとサブタイプ：
+[SE-0156] Class and Subtype existentials
 //資料
+
+---
+
+[SE-0157] Support recursive constraints on associated types
+
+---
+
+[SE-0160] Limiting @objc inference
 
 ---
 
