@@ -260,7 +260,8 @@ https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-wi
 
 ---
 
-ここからは現時点でAcceptされたプロポーサル、実装済みのプロポーサルを見てみましょう。※Package Manager関係のプロポーサルは今回除外します。プロポーサルのステータスはここから見れます。https://apple.github.io/swift-evolution/
+ここからは現時点でAcceptされたプロポーサル、実装済みのプロポーサルを見てみましょう。※Package Manager関係は今回除外します。また、Swift4で入るかは未定のものも多いです。プロポーサルのステータスはここから。
+https://apple.github.io/swift-evolution/
 
 ---
 
@@ -269,8 +270,9 @@ https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-wi
 
 ---
 
-ここからはまだSwift4に入るかは未定のものです。まずはUnapplied Method Referenceの平坦化です。現在はカリー化されますが、これをTypeを含めたタプルにしてflattenしましょうという変更です。
-//資料
+Swift4で入るかは未定ですが、AcceptされているProposalです。
+Unapplied Method Referenceです。現在はcurry化されますが、Typeと引数を同じネストで引数となるように変更されます。
+![SE-0042](./imgs/7/7.001.jpeg)
 
 ---
 
