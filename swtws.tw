@@ -7,7 +7,7 @@ Swift4に関しては、Swift.orgやswift-evolutionで毎日情報が流れて�
 
 ---
 
-よくわかっている方々には物足りないかもしれませんし、内容を取り違えていたり、深く理解できていない箇所もあるかもしれません。なので、遠慮なくご指摘いただければ幸いです。今回は僕が議題を提供し、みなさんと議論できればとおもいます。さて、早速始めましょう。Swift4が何を目指しているのかはここに記載されています。https://github.com/apple/swift-evolution#development-major-version--swift-40
+内容を取り違えているかもしれないので、遠慮なくご指摘いただければ幸いです。僕が議題を提供し、みなさんと議論できればと思います。さて、早速始めましょう。Swift4が何を目指しているのかはここに記載されています。https://goo.gl/5XSu7M
 
 ---
 
@@ -16,12 +16,11 @@ Swift4は今年2017年の下期のリリースを目標に開発が進んでい�
 
 ---
 
-Stage1: ソー​​ス安定性とABI安定性に必要な基本事項にフォーカスしています。既存の言語機能のABIを根本的に変更しない機能や、標準ライブラリに対するAPIの破壊的な変更を意味する変更は、この段階では考慮していません。Stage1の主だった変更をご紹介します。![003](./imgs/swtws/swtws.003.jpeg)
+Stage1: ソー​​ス安定性とABI安定性に必要なことにフォーカスしています。既存の言語機能のABIを根本的に変更しない機能や、標準ライブラリに対するAPIの破壊的な変更を意味する変更は、この段階では考慮していません。Stage1の主だった変更をご紹介します。![003](./imgs/swtws/swtws.003.jpeg)
 
 ---
 
-ソースの安定化：異なるSwiftの言語バージョンが同じソースコードに共存できます。Swift3.1ですでに@ available にSwiftのバージョン指定ができるようになっています。
-https://github.com/apple/swift-evolution/blob/master/proposals/0141-available-by-swift-version.md
+ソースの安定化：異なるSwiftの言語バージョンが同じソースコードに共存できます。Swift3.1ですでに@ available にSwiftのバージョン指定ができるようになっています。https://goo.gl/ZXcAhi
 ![005](./imgs/swtws/swtws.005.jpeg)
 
 ---
@@ -30,7 +29,7 @@ ABIの安定化：コード生成に関して、Swiftランタイムとのやり
 
 ---
 
-標準ライブラリのジェネリクスの改善：条件付き適合、再帰的なプロトコルの適合、Where節を使った条件付き関連型など、ジェネリクスの機能が強化されます。Genericsに関するプロポーサルを紹介します。Generics Manifestにも記載されています。https://github.com/apple/swift/blob/master/docs/GenericsManifesto.md
+ジェネリクスの改善：条件付き適合、再帰的なプロトコルの適合、Where節を使った条件付き関連型など、ジェネリクスの機能が強化されます。Genericsに関するプロポーサルを紹介します。ここにも記載されています。https://goo.gl/BPnfmK
 
 ---
 
@@ -71,7 +70,7 @@ Stringの再評価：Swift4では、Unicodeの正確さを維持しながら、�
 
 ---
 
-Memory Ownership Model：CycloneやRustをインスパイアしたモデルになるそうです。これはABIに大きく影響します。Stage1にすべて導入するには巨大過ぎますが、今この段階で設計が必要とのことですが、具体的な話はまだ出てきていない認識です。
+Memory Ownership Model：CycloneやRustをインスパイアしたモデルになるそうです。Stage1にすべて導入するには巨大ですが、この段階で設計が必要とのことです。ですが具体的な話はまだ出てきていない認識です。
 
 ---
 
@@ -79,12 +78,11 @@ Memory Ownership Model：CycloneやRustをインスパイアしたモデルに�
 
 ---
 
-残念なことに、ABIの安定化は延期されました😇 2/16にその旨がメーリスに流れています。コンパイル時間の改善やコンパイラの安定化を優先したということです。
-https://lists.swift.org/pipermail/swift-evolution/Week-of-Mon-20170213/032116.html
+残念なことに、ABIの安定化は延期されました😇 2/16にその旨がメーリスに流れています。コンパイル時間の改善やコンパイラの安定化を優先したということです。https://goo.gl/3KBvrX
 
 ---
 
-そもそも”ABIの安定化”とはどういうことでしょう。具体的には、ABI Manifestoに書かれています。簡単に言うと、違うバージョンのSwiftでコンパイルされたフレームワークをそのまま使えるぜ！ということです。https://github.com/apple/swift/blob/master/docs/ABIStabilityManifesto.md
+そもそも”ABIの安定化”とはどういうことでしょう。具体的には、ABI Manifestoに書かれています。簡単に言うと、違うバージョンのSwiftでコンパイルされたフレームワークをそのまま使えるぜ！ということです。https://goo.gl/PZd6j9
 
 ---
 
@@ -100,7 +98,7 @@ Swiftのバージョンは統一する必要があるので、Carthageなどで�
 
 ---
 
-そのままSwift3を使い続けることもできます。Swift4がリリースされると、`-swift-version 3`と`-swift-version 4`の2つのフラグが提供されます。ここに記載があります。https://swift.org/blog/swift-4-0-release-process/
+そのままSwift3を使い続けることもできます。Swift4がリリースされると、`-swift-version 3`と`-swift-version 4`の2つのフラグが提供されます。https://goo.gl/zwlT0Z
 
 ---
 
@@ -126,8 +124,12 @@ Swift Version 4は、Swift 4の破壊的変更を許容します。主に書き�
 
 ---
 
-[SE-0154] Dictionaryのキーの探索と、mutatingが非効率なので、カスタムコレクションが提供されます。現状ではLazyMapCollectionですが、keysもValueも独自のCollection型になります。
+[SE-0154] Dictionaryのキーの探索と、mutatingが非効率なので、カスタムコレクションが提供されます。
 ![016](./imgs/swtws/swtws.016.jpeg)
+
+---
+
+現状ではLazyMapCollectionですが、keysもValueも独自のCollection型になります。
 ![017](./imgs/swtws/swtws.017.jpeg)
 
 ---
@@ -140,7 +142,7 @@ Foundationの改善：SwiftではCocoa SDKをシームレスに動作させる�
 
 ---
 
-ここからは、Stringの再評価によって、どのようにAPIが変わるのか見てみましょう。これはString Manifestに記載されています。https://github.com/apple/swift/blob/master/docs/StringManifesto.md
+ここからは、Stringの再評価によって、どのようにAPIが変わるのか見てみましょう。これはString Manifestに記載されています。https://goo.gl/en9vg3
 
 ---
 
@@ -148,8 +150,7 @@ Swift 4以降におけるStringが目指しているところは、Perlよりも
 
 ---
 
-Stringは標準ライブラリやFoundationによって複雑になっています。Stringだけで205個のAPIがあるようです。Intとの比較はジョークみたいなもんです 🤡
-https://github.com/apple/swift/blob/master/docs/StringManifesto.md#api-surface-area
+Stringは標準ライブラリやFoundationによって複雑になっています。Stringだけで205個のAPIがあるようです。Intとの比較はジョークみたいなもんです 🤡 https://goo.gl/GW7dWp
 
 ---
 
@@ -158,8 +159,7 @@ APIをわかりやすくするために、以下の変更が加わります。
 
 ---
 
-1.0では、Collectionでしたが、問題があって2.0で、そうではなくなりました。が、その問題も特に問題じゃなかったから復活させるそうです(本質的ではないので触れません)。とにかくSwift4では再びCollectionになります。
-https://github.com/apple/swift/blob/master/docs/StringManifesto.md#string-should-be-a-collection-of-characters-again
+1.0では、Collectionでしたが、問題があって2.0で、そうではなくなりました。が、その問題も特に問題じゃなかったから復活させるそうです。とにかくSwift4では再びCollectionになります。https://goo.gl/YAXqyI
 
 ---
 
@@ -167,17 +167,15 @@ StringがCollectionになるということは、当然Sequenceにも適合し�
 
 ---
 
-そのスライス操作の統一も行うと書いてあります。startIndexとendIndexが明確な場合、subscriptでスライスでき、in-place mutatingもサポートしています。特定のindexからendまで、または最初からindexまでのスライスはメソッドを通して行われ、in-place mutatingはサポートしていません。
-
-```
+スライス操作の統一：startとendが明確な場合、subscriptでスライスでき、in-place mutatingもサポートされます。特定のindexからstart/endまでのスライスはメソッドで行われ、in-place mutatingはされません。
+```swift:in-place-mutating.swift
 s[i..<j].mutate() //in-place mutating sがスライスされる
 s.prefix(upTo: i).readOnly() // not supported in-place mutating sに影響なし
 ```
 
 ---
 
-スライスすると、SubStringが生成されます。このSubStringの生成方法には3つの選択肢があり、3番を最良と考えているようです。
-https://github.com/apple/swift/blob/master/docs/StringManifesto.md#substrings
+スライスすると、SubStringが生成されます。このSubStringの生成方法には3つの選択肢があり、3番を最良と考えているようです。https://goo.gl/dYMpfn
 ![020](./imgs/swtws/swtws.020.jpeg)
 
 ---
@@ -187,7 +185,7 @@ https://github.com/apple/swift/blob/master/docs/StringManifesto.md#substrings
 
 ---
 
-3はArrayに対するArraySliceのように、StringとSubStringを別の型として扱います。欠点としては、Stringを作ると、SubStringも生成されることですが、SubStringはStringのサブタイプとなり、暗黙的型変換が使えるので、型が違うことも問題にならないと書いてあります。
+3はStringとSubStringを別の型として扱います。欠点としては、Stringを作ると、SubStringも生成されることですが、SubStringはStringのサブタイプとなり、暗黙的型変換が使えるので、型が違うことも問題にならないと書いてあります。
 
 ---
 
@@ -200,13 +198,12 @@ StringとSubStringは別の型という扱いになるので、Unicodeプロト�
 
 ---
 
-文字列操作に適応できるオプションはこのようになります。この国際化の話もSwift4ではまだ不完全で、Swift5でも議論が続くようですね。https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-with-options
+文字列操作に適応できるオプションはこのようになります。この国際化の話もSwift4ではまだ不完全で、Swift5でも議論が続くようですね。https://goo.gl/k7WfzH
 ![022](./imgs/swtws/swtws.022.jpeg)
 
 ---
 
-ここからは現時点でAcceptされたプロポーサル、実装済みのプロポーサルを見てみましょう。※Package Manager関係は今回除外します。また、Swift4で入るかは未定のものも多いです。プロポーサルのステータスはここから。
-https://apple.github.io/swift-evolution
+ここからは現時点でAcceptされたプロポーサル、実装済みのプロポーサルを見てみましょう。※SPM関係は今回除外します。また、Swift4で入るかは未定のものも多いです。プロポーサルのステータスはここから。https://goo.gl/Un6n1b
 
 ---
 
@@ -270,17 +267,8 @@ https://apple.github.io/swift-evolution
 
 ---
 
-プロポーサルにはとても詳しく書いてありますが、ツイートにまとめられなかったので、一昨日potatotipsで先に発表しておきました。資料：https://speakerdeck.com/d_date/se-0160-limiting-at-objc-inference
+プロポーサルにはとても詳しく書いてありますが、ツイートにまとめられなかったので、一昨日potatotipsで先に発表しておきました。資料：https://goo.gl/bZ2u9O
 
 ---
 
-さて、今後のSwiftの変化を駆け巡ってみましたがいかがでしたでしょうか？常にチェックされている方々には少し物足りなかったかもしれません。これまでキャッチアップ出来ていなかった方はこれを気にメーリスで何が議論されているのかぜひ目を通してみてください。
-
----
-
-英語ですが、Google翻訳の精度が良いと翻訳された日本語もなんとなく読めます。英語を頑張りたいという方にはこういうコミュニティもあります。
-https://clem.connpass.com/
-
----
-
-今回登壇駆動でやってみましたが、内容が内容だけに結構きつかったです😇 消化不良になっている項目がいくつもあります。引き続きキャッチアップを続けるとともに、今後Swiftがどんどん良い言語になっていくことを願ってやみません。以上です。どうもありがとうございました！
+さて、今後のSwiftの変化を駆け巡ってみましたがいかがでしたでしょうか？今回登壇駆動でやってみましたが、内容が内容だけに結構きつかったです😇 ですが、今後Swiftがどんどん良い言語になっていくことを願ってやみません。以上です。どうもありがとうございました！
