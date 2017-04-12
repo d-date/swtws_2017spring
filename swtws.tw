@@ -2,16 +2,11 @@
 
 ---
 
-Swift4に関しては、Swift.orgやswift-evolutionで毎日情報が流れていますが、僕自身ちゃんとキャッチアップできていませんでした。今日はキャッチアップした内容を出来るだけリソースを提示しながらお話したいと思います。
+Swift4に関しては、Swift.orgやswift-evolutionで毎日情報が流れていますが、僕自身ちゃんとキャッチアップできていませんでした。今日は出来るだけリソースを提示しながらお話したいと思います。
 
 ---
 
-日頃メーリスを読んだりしてSwift4のことを熟知されている方には物足りないかもしれません。内容を取り違えていたり、深く理解できていない箇所もあるかもしれません。なので、遠慮なくご指摘いただければ幸いです。今回は僕が議題を提供し、みなさんと議論できればとおもいます。
-
----
-
-さて、早速始めましょう。Swift4が何を目指しているのかはここに記載されています。
-https://github.com/apple/swift-evolution#development-major-version--swift-40
+よくわかっている方々には物足りないかもしれませんし、内容を取り違えていたり、深く理解できていない箇所もあるかもしれません。なので、遠慮なくご指摘いただければ幸いです。今回は僕が議題を提供し、みなさんと議論できればとおもいます。さて、早速始めましょう。Swift4が何を目指しているのかはここに記載されています。https://github.com/apple/swift-evolution#development-major-version--swift-40
 
 ---
 
@@ -32,73 +27,36 @@ ABIの安定化：コード生成に関して、Swiftランタイムとのやり
 
 ---
 
-標準ライブラリのジェネリクスの改善：条件付き適合、再帰的なプロトコルの適合、Where節を使った条件付き関連型など、ジェネリクスの機能が強化されます。この3つのプロポーサルを紹介します。Generics Manifestにも記載されています。https://github.com/apple/swift/blob/master/docs/GenericsManifesto.md
+標準ライブラリのジェネリクスの改善：条件付き適合、再帰的なプロトコルの適合、Where節を使った条件付き関連型など、ジェネリクスの機能が強化されます。Genericsに関するプロポーサルを紹介します。Generics Manifestにも記載されています。https://github.com/apple/swift/blob/master/docs/GenericsManifesto.md
+
+---
+
+[SE-0142]関連型が適合するプロトコルにwhere節で条件を付けることができます。
 
 ---
 
 [SE-0143]条件付き適合(Conditional Confermance):
 特定の条件にマッチしたときだけ、ジェネリクスをそのプロトコルに適合するようにできます。
-https://github.com/apple/swift-evolution/blob/master/proposals/0143-conditional-conformances.md
-
-``` swift
-protocol P {
-  func doSomething()
-}
-
-struct S: P {
-  func doSomething() { print("S") }
-}
-
-// ElementがPに適合するときだけ、ArrayもPに適合する。
-extension Array: P where Element: P {
-  func doSomething() {
-    for value in self {
-      value.doSomething()
-    }
-  }
-}
-
-// 動的にPに適合しているか判定
-func doSomethingIfP(_ value: Any) {
-  if let p = value as? P {
-    p.doSomething()
-  } else {
-    print("Not a P")
-  }
-}
-
-doSomethingIfP([S(), S(), S()]) // "S"が3回表示される
-doSomethingIfP([1, 2, 3])       // "Not a P"と表示される
-```
 
 ---
 
-[SE-0157]再帰的なプロトコルの適合(Recursive Protocol Constraints):
-あるプロトコルの関連型がプロトコル自身に適合できるようになります。
-https://github.com/apple/swift-evolution/blob/master/proposals/0157-recursive-protocol-constraints.md
+[SE-0157]あるプロトコルの関連型がプロトコル自身に適合できるようになります。例では、先程のwhereを使って条件をつけています。
 
-``` swift
-protocol Sequence {
-    associatedtype SubSequence: Sequence //Sequenceの関連型がSequenceに適合
-        where Iterator.Element == SubSequence.Iterator.Element, SubSequence.SubSequence == SubSequence
-
-    func dropFirst(_ n: Int) -> Self.SubSequence
-    // ...
-}
-```
 ---
 
-[SE-0142]Where節を使った条件付き関連型
-上記にも関連しますが、関連型が適合するプロトコルにwhere節で条件を付けることができます。https://github.com/apple/swift-evolution/blob/master/proposals/0142-associated-types-constraints.md
+[SE-0148]subscriptに型変数が使えるようになりました。
+![SE-0148](./imgs/11/11.001.jpeg)
 
-```swift
-protocol Sequence {
-    associatedtype Iterator : IteratorProtocol
-    associatedtype SubSequence : Sequence where SubSequence.Iterator.Element == Iterator.Element
-    //whereでassociatedtypeに条件をつけられる
-    ...
-}
-```
+---
+
+[SE-0104]Genericsの改善とは直接関係しませんが、整数型をプロトコルで再構成して、Generic Programingできるようにします。現在だとこのようにIntとInt8でOperatorの適応はできません。
+![SE-0104](./imgs/9/9.001.jpeg)
+
+---
+
+このようなプロトコルで再構成して、Generic Programingを可能にします。各プロトコルの詳細はこちらをご覧ください。
+https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-integers.md
+![SE-0104](./imgs/10/10.001.jpeg)
 
 ---
 
@@ -151,18 +109,21 @@ Swift Version 4は、Swift 4の破壊的変更を許容します。主に書き�
 
 ---
 
-ソースの破壊的変更：Swift4モードの破壊的変更です。下記の方針で行われます。
-* 既存構文/APIはどんどん壊して変更。
-* 新規構文/APIは絶対良いもので、既存のものとコンフリクトしないようにする
-* 既存APIから自動的に移行できるようにする
+ソースの破壊的変更：Swift4モードの破壊的変更です。下記の方針で行われます。破壊的変更は続きますが、swift3モードがあるのでしばらくは大丈夫でしょうか。いつまで延命できるのか気になります。
 
 ---
 
-既存の標準ライブラリの改善：特に標準ライブラリの追加では、対応する実装を提供するプロポーザルが優先されます。改善のための潜在的なフォーカスエリアには、コレクション（例えば、新しいコレクションアルゴリズム）や、Dictionaryの人間工学おける改善などが含まれます。
+既存の標準ライブラリの改善：コレクションアルゴリズムや、Dictionaryの改善などが含まれます。これに関連するものとして次のプロポーサルを見てみます。
 
 ---
 
-Foundationの改善：SwiftではCocoa SDKをシームレスに動作させるために、Foundation APIの改良する予定です。Stage2を開始すると、具体的な目標の詳細が記載されるとのことですが、今日までのところ、その内容は提示されていませんね…
+[SE-0154] Dictionaryのキーの探索と、mutatingが非効率なので、カスタムコレクションが提供されます。現状ではLazyMapCollectionですが、keysもValueも独自のCollection型になります。
+![SE-0154](./imgs/16/16.001.jpeg)
+![SE-0154](./imgs/16/16.002.jpeg)
+
+---
+
+Foundationの改善：SwiftではCocoa SDKをシームレスに動作させるために、Foundation APIの改良する予定です。Stage2が開始されると、具体的な目標の詳細が記載されるとのことですが、今日までのところ、その内容は提示されていませんね…
 
 ---
 
@@ -212,33 +173,25 @@ https://github.com/apple/swift/blob/master/docs/StringManifesto.md#substrings
 
 ---
 
-1はSwift3.0の方法です。開始位置、長さ、バッファ所有者を持ったCharacterViewを生成します。効率の良さと引き換えに、Stringが開放されたあともSubStringが生き続けます。他言語ではメモリリークとみなされ、Java1.7からはコピーされます。
+現状では1です。。開始位置、長さ、バッファ所有者を持ったCharacterViewを生成します。効率の良さと引き換えに、Stringが開放されたあともSubStringが生き続けます。他言語ではメモリリークとみなされ、Java1.7からはコピーされます。
 ![4.png](./imgs/4/4.png)
 
 ---
 
-2はC#やNSStringで取られている方法です。この方法はメモリリークは回避できますが、コピーはパフォーマンス上オーバーヘッドとなります。なので、SubStringを使うよりは、String/Rangeを用いた方が良いと書いてあります。
+3はArrayに対するArraySliceのように、StringとSubStringを別の型として扱います。欠点としては、Stringを作ると、SubStringも生成されることですが、SubStringはStringのサブタイプとなり、暗黙的型変換が使えるので、型が違うことも問題にならないと書いてあります。
 
 ---
 
-ArrayではArraySliceを用いることで、不慮のメモリリークを防ぎながら、ストレージの共有を実現しています。3では、このArraySliceと同じように、SubStringという別の型を用意しましょうということが提案されています。
+StringとSubStringは別の型という扱いになるので、Unicodeプロトコルの導入も検討されているようです。今日の段階で触れるにはもう少し仕様が変わりそうな気配がしたのでやめておきましょう。
 
 ---
 
-3にも欠点はあります。Stringを作ると、SubStringも生成されることです。型のmismatchを解消するために、SubStringはStringのSubTypeとなります。これによりSubStringからString、[SubString]から[String]への暗黙的型変換が行えますと説明されています。型推論と組み合わせるので、型の違いは問題にはならないとのことです。
-
----
-
-よくわからなければString使いましょうとも書いています。StringからSubStringは暗黙的にコピーされます。先程の2番のモデルと比較すると、SubStringの作成タイミングからStringに変換されるタイミングまで、コピーが遅延されています。
-
----
-
-StringとSubStringは別の型という扱いになりますが、その多くの機能は共通しているので、Unicodeプロトコルの導入も検討されているようです。今日の段階で触れるにはもう少し仕様が変わりそうな気配がしたのでやめておきましょう。
-
----
-
-国際化の話です。まずlocalizedXXXというメソッドはなくなります。Localeはパラメータとして渡せるようになります。操作に応じて、デフォルトのオプションが変わります。この国際化の話もSwift4ではまだ不完全で、Swift 5でも議論が続くようですね。https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-with-options
+国際化の話です。まずlocalizedXXXというメソッドはなくなります。Localeはパラメータとして渡せるようになります。操作に応じて、デフォルトのオプションが変わります。
 ![5.jpeg](./imgs/5/5.jpeg)
+
+---
+
+文字列操作に適応できるオプションはこのようになります。この国際化の話もSwift4ではまだ不完全で、Swift5でも議論が続くようですね。https://github.com/apple/swift/blob/master/docs/StringManifesto.md#operations-with-options
 
 ---
 
@@ -262,38 +215,23 @@ https://apple.github.io/swift-evolution
 
 ---
 
-[SE-0104]整数型をプロトコルで再構成して、Generic Programingできるようにします。現在だとこのようにIntとInt8でOperatorの適応はできません。
-![SE-0104](./imgs/9/9.001.jpeg)
-
----
-
-このようなプロトコルで再構成して、Generic Programingを可能にします。各プロトコルの詳細はこちらをご覧ください。
-https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-integers.md
-![SE-0104](./imgs/10/10.001.jpeg)
-
----
-
-[SE-0148]subscriptに型変数が使えるようになりました。
-![SE-0148](./imgs/11/11.001.jpeg)
-
----
-
-[SE-0153]@NSCopyingの挙動についてです。現状では、@NSCopyingをつけても、initializerでコピーが起こりません。そのせいでディープコピーが起こらず予期せぬ挙動が起こることがあります。
-
+[SE-0153]@NSCopyingの挙動についてです。NSCopyingに準拠したこのようなPersonクラスがあるとします。
 ![SE-0153](./imgs/12/12.001.jpeg)
+
+---
+
+現状では、@NSCopyingをつけても、initializerでコピーが起こりません。そのせいでディープコピーが起こらず予期せぬ挙動が起こることがあります。
 ![SE-0153](./imgs/12/12.002.jpeg)
 
 ---
 
-@NSCopyingをつけると、常にコピーが起こるように修正されます。
+期待した挙動を実現するには、現状ではinitializerで.copy()を明示的に呼ぶ必要があります。
 ![SE-0153](./imgs/12/12.003.jpeg)
-![SE-0153](./imgs/12/12.004.jpeg)
 
 ---
 
-[SE-0154] Dictionaryのキーの探索と、mutatingが非効率なので、カスタムコレクションが提供されます。現状ではLazyMapCollectionですが、keysもValueも独自のCollection型になります。
-![SE-0154](./imgs/16/16.001.jpeg)
-![SE-0154](./imgs/16/16.002.jpeg)
+これはわかりにくいので、@NSCopyingをつけると、常にコピーが起こるように修正されます。
+![SE-0153](./imgs/12/12.004.jpeg)
 
 ---
 
@@ -301,19 +239,23 @@ https://github.com/apple/swift-evolution/blob/master/proposals/0104-improved-int
 
 ---
 
-ルール1と2です。
+クラスであることはAnyObjectを使って示します。また、クラスとプロトコルを組み合わせることで、そのプロトコルに準拠したクラスのサブクラスであることを示します。
 
 ---
 
-ルール3と4です。
+プロトコル構成にAnyObjectとClass両方が含まれる場合は、Classが優先されます。Classが2つ含まれる場合、そのクラスは同じ、またはサブクラスである必要があります。サブクラスの場合はスーパクラスをオーバーライドします。
 
 ---
 
-ルール5です。typealiasはAnyObject,クラス, プロトコルに展開し、ルール1〜4を適応します。
+プロトコル構成に含まれるtypealiasはプロトコル、クラス、AnyObjectに展開し、ルール1〜4を適応します。
 
 ---
 
-[SE-0160]@objcの推論の挙動が変わります。とても1ツイートにまとめられなかったので、一昨日potatotipsで先に発表しておきました。資料：https://speakerdeck.com/d_date/se-0160-limiting-at-objc-inference
+[SE-0160]@objcの推論の挙動が変わります。簡単にまとめておくと、dynamicのついたもの、NSObject由来のクラスは従来は@objcをつけなくても@objcとして振る舞いましたが、swift4ではそうではなくなります。
+
+---
+
+プロポーサルにはとても詳しく書いてありますが、ツイートにまとめられなかったので、一昨日potatotipsで先に発表しておきました。資料：https://speakerdeck.com/d_date/se-0160-limiting-at-objc-inference
 
 ---
 
